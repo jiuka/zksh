@@ -1,0 +1,56 @@
+.\" generated with Ronn/v0.7.3
+.\" http://github.com/rtomayko/ronn/tree/0.7.3
+.
+.TH "ZKRM" "1" "2017-05-14" "" ""
+.
+.SH "NAME"
+\fBzkrm\fR \- remove zookeeper node
+.
+.SH "SYNOPSIS"
+\fBzkrm\fR \-\-server SERVER:PORT NODE
+.
+.SH "DESCRIPTION"
+Remove the given nodes from the ZooKeeper hirarchy\.
+.
+.SH "OPTIONS"
+ZKSH Options:
+.
+.TP
+\fB\-c\fR, \fB\-\-config\fR=FILE
+The ZKHS configfile to read\.
+.
+.TP
+\fB\-s\fR, \fB\-\-server\fR=STRING
+ZooKeeper server string\.
+.
+.TP
+\fB\-a\fR, \fB\-\-auth\fR=STRING
+ZooKeeper auth string\.
+.
+.TP
+\fB\-A\fR, \fB\-\-acl\fR=STRING
+ZooKeeper acl string to be added to created nodes\.
+.
+.TP
+\fB\-q\fR, \fB\-\-quiet\fR
+Print less output\.
+.
+.TP
+\fB\-v\fR, \fB\-\-verbose\fR
+Print more output\.
+.
+.TP
+\fB\-V\fR, \fB\-\-version\fR
+Show the program version\.
+.
+.SH "ENVIRONMENT"
+The following environment variable are useby ZKHS\.
+.
+.TP
+\fBZKSH_CONFIG\fR
+The path to the config file which should be read of none is given on the command line\.
+.
+.TP
+\fBZKSH_SERVER\fR
+The ZooKeeper server sting which should be read of none is given on the command line\.
+

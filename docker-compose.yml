@@ -1,0 +1,12 @@
+version: '2'
+services:
+  bats:
+    build: .
+    command: /usr/bin/bats /zksh/tests/bats
+    links:
+      - zoo1
+  zoo1:
+    image: zookeeper
+    restart: always
+    ports:
+      - 2181:2181

@@ -1,0 +1,14 @@
+Source: zksh
+Section: misc
+Priority: optional
+Maintainer: Marius Rieder <marius.rieder@durchmesser.ch>
+Build-Depends: debhelper (>=9), autotools-dev, libzookeeper-mt-dev, libconfig-dev, check
+Standards-Version: 3.9.6
+Homepage: https://github.com/jiuka/zksh
+
+Package: zksh
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Shell bindings for ZooKeeper
+ Tools like zkls, zktouch and zkrm allow you to use the powers of ZooKeeper
+ in your shell script.

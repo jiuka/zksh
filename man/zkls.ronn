@@ -1,0 +1,55 @@
+zkls(1) -- list zookeeper node contents
+=======================================
+
+## SYNOPSIS
+
+`zkls` --server SERVER:PORT NODE
+
+## DESCRIPTION
+
+List information about the content of the NODE. The child nodes are sorted
+alphabetically.
+
+## OPTIONS
+
+Options:
+
+ * `-l`, `--long`:
+   Show additional informations about the child nodes.
+
+ZKSH Options:
+
+ * `-c`, `--config`=FILE:
+   The ZKHS configfile to read.
+
+ * `-s`, `--server`=STRING:
+   ZooKeeper server string.
+
+ * `-a`, `--auth`=STRING:
+   ZooKeeper auth string.
+
+ * `-A`, `--acl`=STRING:
+   ZooKeeper acl string to be added to created nodes.
+
+ * `-q`, `--quiet`:
+   Print less output.
+
+ * `-v`, `--verbose`:
+   Print more output.
+
+ * `-V`, `--version`:
+   Show the program version.
+
+
+## ENVIRONMENT
+
+The following environment variable are useby ZKHS.
+
+ * `ZKSH_CONFIG`:
+   The path to the config file which should be read of none is given on the
+   command line.
+
+ * `ZKSH_SERVER`:
+   The ZooKeeper server sting  which should be read of none is given on the
+   command line.
+

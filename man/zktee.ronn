@@ -1,0 +1,49 @@
+zktee(1) -- read from standard input and write to standard output and node
+==========================================================================
+
+## SYNOPSIS
+
+`zktee` --server SERVER:PORT NODE
+
+## DESCRIPTION
+
+Copy standard input to the ZooKeeper NODE, and also to standard output.
+
+## OPTIONS
+
+ZKSH Options:
+
+ * `-c`, `--config`=FILE:
+   The ZKHS configfile to read.
+
+ * `-s`, `--server`=STRING:
+   ZooKeeper server string.
+
+ * `-a`, `--auth`=STRING:
+   ZooKeeper auth string.
+
+ * `-A`, `--acl`=STRING:
+   ZooKeeper acl string to be added to created nodes.
+
+ * `-q`, `--quiet`:
+   Print less output.
+
+ * `-v`, `--verbose`:
+   Print more output.
+
+ * `-V`, `--version`:
+   Show the program version.
+
+
+## ENVIRONMENT
+
+The following environment variable are useby ZKHS.
+
+ * `ZKSH_CONFIG`:
+   The path to the config file which should be read of none is given on the
+   command line.
+
+ * `ZKSH_SERVER`:
+   The ZooKeeper server sting  which should be read of none is given on the
+   command line.
+
