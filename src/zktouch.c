@@ -20,23 +20,51 @@
  */
 
 #include "zksh.h"
+#include "zkeproxy.h"
+#include <sys/prctl.h>
 
 #include <getopt.h>
 
 char *usage_description = \
-"  Create a new NODE without content.\n";
+"  Create a new NODE without content.\n"
+"\n"
+"  Options:\n"
+"    -e, --ephemeral       create a ephemeral node\n";
+
+static struct option const long_options[] = {
+  {"ephemeral", no_argument, 0, 'e'},
+  {NULL, 0, NULL, 0}
+};
+
 
 int main(int argc, char **argv) {
+  int c;
   int i;
   int rc;
+  int node_flag = 0;
+  int ephemeral = 0;
 
   zksh_init(&argc, argv);
+
+  while ((c = getopt_long(argc, argv, "e", long_options, (int *) 0)) != EOF) {
+    switch(c) {
+      case 'e':
+        ephemeral = 1;
+        node_flag = ZOO_EPHEMERAL;
+        break;
+      default:
+        zk_usage(EXIT_FAILURE);
+    }
+  }
 
   // Validate user input
   if (argc <= optind) {
     fprintf(stderr, "%s: At least one node needs to be specified.\n", zksh_program);
     exit(EXIT_FAILURE);
   }
+
+  if (ephemeral == 1)
+    zksh_eproxy_init();
 
   zksh_connect();
 
@@ -45,8 +73,13 @@ int main(int argc, char **argv) {
     if (zksh_check_nodepath(argv[i]) != 0)
       continue;
 
-    rc = zoo_create(zh, argv[optind], NULL, -1, zksh_get_acl(), 0, NULL, -1);
+    rc = zoo_create(zh, argv[optind], NULL, -1, zksh_get_acl(), node_flag, NULL, -1);
     zk_check_rc(rc, argv[i]);
+  }
+
+  if (ephemeral == 1 && zk_return_code == EXIT_SUCCESS) {
+    zksh_eproxy_detach();
+    zksh_eproxy_wait();
   }
 
   exit(zk_return_code);

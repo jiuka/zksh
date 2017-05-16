@@ -223,6 +223,9 @@ void zk_check_rc(int rc, char *node) {
   } else if (rc == ZBADVERSION) {
     fprintf(stderr, "%s: %s: Node version missmatch\n", zksh_program, node);
     zk_return_code = EXIT_FAILURE;
+  } else if (rc == ZNODEEXISTS) {
+    fprintf(stderr, "%s: %s: Node already exists\n", zksh_program, node);
+    zk_return_code = EXIT_FAILURE;
   } else if (rc == ZNOTEMPTY) {
     fprintf(stderr, "%s: %s: Node is not empty\n", zksh_program, node);
     zk_return_code = EXIT_FAILURE;

@@ -6,4 +6,5 @@ LDADD = libzksh.a -lzookeeper_mt
 
 noinst_LIBRARIES  = libzksh.a
 
-libzksh_a_SOURCES = zksh.c zksh.h
+libzksh_a_SOURCES = zksh.c zksh.h \
+										zkeproxy.c zkeproxy.h
