@@ -1,7 +1,7 @@
 .\" generated with Ronn/v0.7.3
 .\" http://github.com/rtomayko/ronn/tree/0.7.3
 .
-.TH "ZKGETACL" "1" "2017-05-14" "" ""
+.TH "ZKGETACL" "1" "2017-05-16" "" ""
 .
 .SH "NAME"
 \fBzkgetacl\fR \- get node access controll list
@@ -11,6 +11,44 @@
 .
 .SH "DESCRIPTION"
 For each node, zkgetacl displays the Access Control List (ACL)\.
+.
+.P
+Output format is as follows:
+.
+.IP "" 4
+.
+.nf
+
+1: NODE
+2:   rwcda ID SCHEME
+3:   r\-\-\-\- ID SCHEME
+.
+.fi
+.
+.IP "" 0
+.
+.P
+ZooKeeper Permissions:
+.
+.TP
+\fBr\fR
+read
+.
+.TP
+\fBw\fR
+write
+.
+.TP
+\fBc\fR
+create
+.
+.TP
+\fBd\fR
+delete
+.
+.TP
+\fBa\fR
+admin
 .
 .SH "OPTIONS"
 ZKSH Options:

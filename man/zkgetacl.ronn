@@ -9,6 +9,30 @@ zkgetacl(1) -- get node access controll list
 
 For each node, zkgetacl displays the Access Control List (ACL).
 
+Output format is as follows:
+
+    1: NODE
+    2:   rwcda ID SCHEME
+    3:   r---- ID SCHEME
+  
+ZooKeeper Permissions:
+
+ * `r`:
+ read
+
+ * `w`:
+ write
+
+ * `c`:
+ create
+
+ * `d`:
+ delete
+
+ * `a`:
+ admin
+
+
 ## OPTIONS
 
 ZKSH Options:

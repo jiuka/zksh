@@ -1,7 +1,7 @@
 .\" generated with Ronn/v0.7.3
 .\" http://github.com/rtomayko/ronn/tree/0.7.3
 .
-.TH "ZKTOUCH" "1" "2017-05-14" "" ""
+.TH "ZKTOUCH" "1" "2017-05-16" "" ""
 .
 .SH "NAME"
 \fBzktouch\fR \- create zookeeper node
@@ -13,6 +13,13 @@
 Creates the ZooKeeper NODE\. Without a ACL given the node will be world writable\. With ACL its world readable and only writable by the given id\.
 .
 .SH "OPTIONS"
+Options:
+.
+.TP
+\fB\-e\fR, \fB\-\-ephemeral\fR
+Create a ephemeral node and keep lingering in the background\.
+.
+.P
 ZKSH Options:
 .
 .TP

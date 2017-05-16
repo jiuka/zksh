@@ -12,6 +12,11 @@ writable. With ACL its world readable and only writable by the given id.
 
 ## OPTIONS
 
+Options:
+
+ * `-e`, `--ephemeral`:
+   Create a ephemeral node and keep lingering in the background.
+
 ZKSH Options:
 
  * `-c`, `--config`=FILE:
