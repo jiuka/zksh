@@ -136,7 +136,7 @@ int zksh_init(int *argc, char **argv) {
     if (strip_args > 0) {
       optind-=strip_args;
       *argc-=strip_args;
-      for(int i=optind; i<*argc; i++) {
+      for(int i=optind; i<=*argc; i++) {
         argv[i] = argv[i+strip_args];
       }
     }

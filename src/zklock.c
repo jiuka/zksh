@@ -20,6 +20,7 @@
  */
 
 #include "zksh.h"
+#include "zkeproxy.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,20 +37,12 @@
 char *usage_description = \
 "  Print NODEs content to standard output.\n";
 
-pthread_mutex_t wait_for_answer_mutex;
-pthread_cond_t wait_for_answer_threshold_cv;
-
-static void watcher_exist(zhandle_t* zzh, int type, int state,
-    const char* path, void *watcherCtx) {
-pthread_mutex_lock(&wait_for_answer_mutex);
-pthread_cond_signal(&wait_for_answer_threshold_cv);
-pthread_mutex_unlock(&wait_for_answer_mutex);
-}
+pthread_mutex_t wait_for_changemutex;
+pthread_cond_t wait_for_changethreshold_cv;
 
 static void cb_signal_cv(zhandle_t* zzh, int type, int state, const char* path, void *watcherCtx) {
   pthread_cond_t *m = (pthread_cond_t *)watcherCtx;
   pthread_cond_signal(m);
-  printf("[%d] changed %s\n", getpid(), path);
 }
 
 int lock_cmp(const void *a, const void *b) {
@@ -73,10 +66,17 @@ int main(int argc, char **argv) {
   int locksize = 5;
   int locks;
   int i;
+  int c;
   struct Stat stat;
   struct String_vector strings;
 
   zksh_init(&argc, argv);
+
+  if (strcmp(argv[optind], "--") == 0)
+    optind++;
+
+  if (argc == optind+1)
+    zksh_eproxy_init();
 
   zksh_connect();
 
@@ -113,15 +113,14 @@ int main(int argc, char **argv) {
     printf("Created lock node %s\n", mylock_short);
   }
 
-    pthread_mutex_init(&wait_for_answer_mutex, NULL);
-    pthread_cond_init(&wait_for_answer_threshold_cv, NULL);
-
+  // Initialize mutex and cv to wait logic
+  pthread_mutex_init(&wait_for_changemutex, NULL);
+  pthread_cond_init(&wait_for_changethreshold_cv, NULL);
 
   // Wait for Lock
   int qpos;
   do {
     // Reset status
-    locks = 0;
     previous = NULL;
 
     // List all locks
@@ -136,27 +135,23 @@ int main(int argc, char **argv) {
     m = bsearch(&mylock_short, strings.data, strings.count, sizeof(char *), lock_cmp);
     qpos = ((intptr_t)m - (intptr_t)strings.data) / sizeof(char *);
 
-    printf("[%d] QPOS: %d\n", getpid(), qpos);
-
     if (qpos == locksize) {
+      // Next in line, watch all current
       for (i=0; i < locksize; i++) {
         previous = zksh_join_path(argv[optind], strings.data[i]);
-        rc = zoo_wexists(zh, previous, cb_signal_cv, &wait_for_answer_threshold_cv, NULL);
-        
-        printf("[%d] Wait for %s\n", getpid(), previous);
+        rc = zoo_wexists(zh, previous, cb_signal_cv, &wait_for_changethreshold_cv, NULL);
       }
-      pthread_mutex_lock(&wait_for_answer_mutex);
-      pthread_cond_wait(&wait_for_answer_threshold_cv, &wait_for_answer_mutex);
-      pthread_mutex_unlock(&wait_for_answer_mutex);
+      pthread_mutex_lock(&wait_for_changemutex);
+      pthread_cond_wait(&wait_for_changethreshold_cv, &wait_for_changemutex);
+      pthread_mutex_unlock(&wait_for_changemutex);
     } else if(qpos > locksize) {
+      // Watch previous queue entry
       previous = zksh_join_path(argv[optind], strings.data[qpos-1]);
-      rc = zoo_wexists(zh, previous, cb_signal_cv, &wait_for_answer_threshold_cv, NULL);
+      rc = zoo_wexists(zh, previous, cb_signal_cv, &wait_for_changethreshold_cv, NULL);
       
-      printf("[%d] Wait for %s\n", getpid(), previous);
-      
-      pthread_mutex_lock(&wait_for_answer_mutex);
-      pthread_cond_wait(&wait_for_answer_threshold_cv, &wait_for_answer_mutex);
-      pthread_mutex_unlock(&wait_for_answer_mutex);
+      pthread_mutex_lock(&wait_for_changemutex);
+      pthread_cond_wait(&wait_for_changethreshold_cv, &wait_for_changemutex);
+      pthread_mutex_unlock(&wait_for_changemutex);
     }
 
   } while (qpos >= locksize);
@@ -173,67 +168,48 @@ int main(int argc, char **argv) {
   if (rc != ZOK)
     exit(zk_return_code);
 
-optind++;
 
-  printf("[%d] GOT LOCK %s\n", getpid(), mylock_short);
-
- if (argc > optind) {
+  if (argc == optind+1) {
+    zksh_eproxy_detach();
+    zksh_eproxy_wait();
+  } else {
+    optind++;
 
     pid_t w, f;
-
-    /* Clear any inherited settings */
     signal(SIGCHLD, SIG_DFL);
     f = fork();
 
-    int err;
+    if (f < 0) {
+      fprintf(stderr, "%s: fork failed: %s\n", zksh_program, strerror(errno));
+      exit(EXIT_FAILURE);
+    }
 
-    if ( f < 0 ) {
-      err = errno;
-      fprintf(stderr, "%s: fork failed: %s\n", zksh_program, strerror(err));
-      exit(1);
-    } else if ( f == 0 ) {
-      char *cmd_argv[argc-optind+1];
-      for (i=0; i < (argc-optind); i++) {
-        cmd_argv[i] = argv[optind+i];
-      }
-      cmd_argv[argc-optind] = NULL;
-      execvp(cmd_argv[0], cmd_argv);
-      err = errno;
+    if (f == 0) {
+      // Child runs the code
+      execvp(argv[optind], argv + optind);
       /* execvp() failed */
-      fprintf(stderr, "%s: %s: %s\n", zksh_program, argv[optind], strerror(err));
-      exit(1);
-    } else {
-      do {
-	w = waitpid(f, &rc, 0);
-	if (w == -1 && errno != EINTR)
-	  break;
-      } while ( w != f );
+      fprintf(stderr, "%s: %s: %s\n", zksh_program, argv[optind], strerror(errno));
+      exit(EXIT_FAILURE);
+    }
 
-      if (w == -1) {
-	err = errno;
-	rc = EXIT_FAILURE;
-	fprintf(stderr, "%s: waitpid failed: %s\n", zksh_program, strerror(err));
-      } else if ( WIFEXITED(rc) )
-	rc = WEXITSTATUS(rc);
-      else if ( WIFSIGNALED(rc) )
-	rc = WTERMSIG(rc) + 128;
-      else
-	rc = -123;	/* WTF? */
+    // Wait for child to exit
+    do {
+      w = waitpid(f, &rc, 0);
+      if (w == -1 && errno != EINTR)
+        break;
+    } while ( w != f );
+
+    if (w == -1) {
+      zk_return_code = EXIT_FAILURE;
+      fprintf(stderr, "%s: waitpid failed: %s\n", zksh_program, strerror(errno));
+    } else if ( WIFEXITED(rc) ) {
+      zk_return_code = WEXITSTATUS(rc);
+    } else if ( WIFSIGNALED(rc) ) {
+      zk_return_code = WTERMSIG(rc) + 128;
+    } else {
+      zk_return_code = -123;
     }
   }
 
-
-  printf("[%d] Die %s\n", getpid(), mylock_short);
-
-      // Test for file precense
-      rc = zoo_exists(zh, mylock, 0, &stat);
-      zk_check_rc(rc, mylock);
-      if (rc != ZOK)
-        exit(1);
-     
-      // Delete Node
-      rc = zoo_delete(zh, mylock, stat.version);
-      zk_check_rc(rc, mylock);
-     
   exit(zk_return_code);
 }

@@ -1,0 +1,66 @@
+.\" generated with Ronn/v0.7.3
+.\" http://github.com/rtomayko/ronn/tree/0.7.3
+.
+.TH "ZKLOCK" "1" "2017-05-17" "" ""
+.
+.SH "NAME"
+\fBzklock\fR \- use zookeeper lock from shell scripts
+.
+.SH "SYNOPSIS"
+\fBzklock\fR \-\-server SERVER:PORT NODE
+.
+.P
+\fBzklock\fR \-\-server SERVER:PORT NODE \fIcommand\fR
+.
+.SH "DESCRIPTION"
+List information about the content of the NODE\. The child nodes are sorted alphabetically\.
+.
+.SH "OPTIONS"
+Options:
+.
+.TP
+\fB\-l\fR, \fB\-\-long\fR
+Show additional informations about the child nodes\.
+.
+.P
+ZKSH Options:
+.
+.TP
+\fB\-c\fR, \fB\-\-config\fR=FILE
+The ZKHS configfile to read\.
+.
+.TP
+\fB\-s\fR, \fB\-\-server\fR=STRING
+ZooKeeper server string\.
+.
+.TP
+\fB\-a\fR, \fB\-\-auth\fR=STRING
+ZooKeeper auth string\.
+.
+.TP
+\fB\-A\fR, \fB\-\-acl\fR=STRING
+ZooKeeper acl string to be added to created nodes\.
+.
+.TP
+\fB\-q\fR, \fB\-\-quiet\fR
+Print less output\.
+.
+.TP
+\fB\-v\fR, \fB\-\-verbose\fR
+Print more output\.
+.
+.TP
+\fB\-V\fR, \fB\-\-version\fR
+Show the program version\.
+.
+.SH "ENVIRONMENT"
+The following environment variable are useby ZKHS\.
+.
+.TP
+\fBZKSH_CONFIG\fR
+The path to the config file which should be read of none is given on the command line\.
+.
+.TP
+\fBZKSH_SERVER\fR
+The ZooKeeper server sting which should be read of none is given on the command line\.
+

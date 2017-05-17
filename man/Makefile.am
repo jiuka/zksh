@@ -1,4 +1,4 @@
-man_MANS = zkls.1 zkrm.1 zkcat.1 zktouch.1 zktee.1 zkgetacl.1
+man_MANS = zkls.1 zkrm.1 zkcat.1 zktouch.1 zktee.1 zkgetacl.1 zklock.1
 EXTRA_DIST = $(man_MANS)
 
 .ronn.1:
