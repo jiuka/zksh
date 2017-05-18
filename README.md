@@ -5,7 +5,7 @@ ZooKeeper shell utilities collection. Eneables you to harvest the power of [ZooK
 
 *zkls*, *tktouch*, *zkrm*, *zktee* and *zkgetacl* allow your to explore and modify the ZooKeeper node structure.
 
-*zklock* enable you to lock resources across systems in simple shell scripts.
+*zklock* and *zkwait* enable you to lock resources across systems in simple shell scripts.
 
 ## Development
 

@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-bin_PROGRAMS = zkls zkcat zktouch zkrm zktee zkgetacl zklock
+bin_PROGRAMS = zkls zkcat zktouch zkrm zktee zkgetacl zklock zkwait
 
 LDADD = libzksh.a -lzookeeper_mt
 
