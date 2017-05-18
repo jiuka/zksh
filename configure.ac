@@ -43,11 +43,11 @@ AC_CHECK_FUNCS([__secure_getenv secure_getenv])
 AC_CHECK_FUNCS([asprintf],,AC_MSG_ERROR([asprintf not found.]))
 
 
-PKG_CHECK_MODULES([LIBCONFIG], [libconfig >= 1.4],
+PKG_CHECK_MODULES([LIBCONFIG], [libconfig >= 1.3],
                   CFLAGS="$CFLAGS $LIBCONFIG_CFLAGS"
                   LIBS="$LIBS $LIBCONFIG_LIBS"
                   ,
-                  AC_MSG_ERROR([libconfig 1.4 or newer not found.])
+                  AC_MSG_ERROR([libconfig 1.3 or newer not found.])
                   )
 
 ACX_PTHREAD
