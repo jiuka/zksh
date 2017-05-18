@@ -60,7 +60,7 @@ int read_config() {
   /* Read the file. If there is an error, report it and exit. */
   if(!config_read_file(&cfg, zksh_config)) {
 
-    fprintf(stderr, "%s:%d - %s\n", config_error_file(&cfg),
+    fprintf(stderr, "%s:%d - %s\n", zksh_config,
         config_error_line(&cfg), config_error_text(&cfg));
     config_destroy(&cfg);
     return(EXIT_FAILURE);
@@ -80,7 +80,6 @@ int read_config() {
 
 void zk_version() {
   printf("%s - ZooKeeper Shell utils. v" PACKAGE_VERSION "\n", zksh_program);
-  printf("   libconfig v%d.%d.%d\n", LIBCONFIG_VER_MAJOR, LIBCONFIG_VER_MINOR, LIBCONFIG_VER_REVISION);
 }
 
 int zksh_init(int *argc, char **argv) {
@@ -90,7 +89,7 @@ int zksh_init(int *argc, char **argv) {
   int argc_new = 0;
   char **argv_new = NULL;
 
-  int c, strip_args;
+  int c, i, strip_args;
   zksh_config = NULL;
   zksh_node_list.count = 0;
   zksh_node_list.data = NULL;
@@ -136,7 +135,7 @@ int zksh_init(int *argc, char **argv) {
     if (strip_args > 0) {
       optind-=strip_args;
       *argc-=strip_args;
-      for(int i=optind; i<=*argc; i++) {
+      for(i=optind; i<=*argc; i++) {
         argv[i] = argv[i+strip_args];
       }
     }

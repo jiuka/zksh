@@ -48,13 +48,13 @@ int zksh_eproxy_init();
  *
  * This methode ensures the proxy process terminates sucessfully.
  */
-int zksh_eproxy_detach();
+void zksh_eproxy_detach();
 
 /**
  * \brief Wait for the calling process to die.
  *
  * Send periodicaly a signal 0 to the calling process to verify its existance.
  */
-int zksh_eproxy_wait();
+void zksh_eproxy_wait();
 
 #endif /* _ZKEPROXY_H */

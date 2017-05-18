@@ -147,11 +147,11 @@ int zksh_eproxy_init() {
   exit(WEXITSTATUS(status));
 }
 
-int zksh_eproxy_detach() {
+void zksh_eproxy_detach() {
   kill(zksh_ep_proxy, SIGUSR1);
 }
 
-int zksh_eproxy_wait() {
+void zksh_eproxy_wait() {
   int alive;
 
   do {
