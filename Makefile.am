@@ -6,6 +6,8 @@ SUBDIRS = src man tests
 
 ACLOCAL_AMFLAGS = -I m4
 
+test: check
+
 docker_bats:
 	docker-compose build
 	docker-compose run --rm bats
