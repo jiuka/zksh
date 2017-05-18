@@ -1,7 +1,7 @@
 # zksh
 [![Build Status](https://travis-ci.org/jiuka/zksh.svg?branch=master)](https://travis-ci.org/jiuka/zksh)
 
-ZooKeeper shell utilities collection. Eneables you to harvest the power of [ZooKeeper](https://zookeeper.apache.org/) in your shell scripts.
+ZooKeeper shell utilities collection. Enables you to harvest the power of [ZooKeeper](https://zookeeper.apache.org/) in your shell scripts.
 
 *zkls*, *tktouch*, *zkrm*, *zktee* and *zkgetacl* allow your to explore and modify the ZooKeeper node structure.
 
